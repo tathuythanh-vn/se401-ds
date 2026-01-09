@@ -1,0 +1,522 @@
+import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { fileService } from '../services/fileService';
+import {
+  FileText,
+  Plus,
+  Search,
+  SlidersHorizontal,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Archive,
+  Send,
+  Eye,
+  ThumbsUp,
+  ThumbsDown,
+  Folder,
+} from 'lucide-react';
+
+export default function ManageFilePage() {
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    loadFiles();
+  }, [filter]);
+
+  const loadFiles = async () => {
+    try {
+      setLoading(true);
+      const response =
+        filter === 'ALL'
+          ? await fileService.getAllFiles()
+          : await fileService.getFilesByState(filter);
+      setFiles(response.data || []);
+    } catch (error) {
+      console.error('Error loading files:', error);
+      setFiles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStateAction = async (fileId, action) => {
+    try {
+      switch (action) {
+        case 'submit':
+          await fileService.submitFile(fileId);
+          break;
+        case 'review':
+          const reviewer = prompt('Nhập tên người phê duyệt:');
+          if (reviewer) await fileService.reviewFile(fileId, reviewer);
+          else return;
+          break;
+        case 'approve':
+          await fileService.approveFile(fileId);
+          break;
+        case 'reject':
+          const reason = prompt('Nhập lý do từ chối:');
+          if (reason) await fileService.rejectFile(fileId, reason);
+          else return;
+          break;
+        case 'archive':
+          await fileService.archiveFile(fileId);
+          break;
+      }
+      loadFiles();
+    } catch (error) {
+      alert(error.response?.data?.message || 'Không thể thực hiện thao tác');
+    }
+  };
+
+  const stateConfig = {
+    CREATED: {
+      color: 'from-gray-400 to-gray-500',
+      bg: 'bg-gray-50',
+      border: 'border-gray-200',
+      icon: FileText,
+      label: 'Đã tạo',
+    },
+    SUBMITTED: {
+      color: 'from-blue-400 to-blue-500',
+      bg: 'bg-blue-50',
+      border: 'border-blue-200',
+      icon: Send,
+      label: 'Đã nộp',
+    },
+    REVIEWING: {
+      color: 'from-yellow-400 to-orange-500',
+      bg: 'bg-yellow-50',
+      border: 'border-yellow-200',
+      icon: Eye,
+      label: 'Đang xét duyệt',
+    },
+    APPROVED: {
+      color: 'from-green-400 to-emerald-500',
+      bg: 'bg-green-50',
+      border: 'border-green-200',
+      icon: CheckCircle,
+      label: 'Đã phê duyệt',
+    },
+    REJECTED: {
+      color: 'from-red-400 to-rose-500',
+      bg: 'bg-red-50',
+      border: 'border-red-200',
+      icon: XCircle,
+      label: 'Đã từ chối',
+    },
+    ARCHIVED: {
+      color: 'from-purple-400 to-purple-500',
+      bg: 'bg-purple-50',
+      border: 'border-purple-200',
+      icon: Archive,
+      label: 'Đã lưu trữ',
+    },
+  };
+
+  const getAvailableActions = (state) => {
+    const actions = {
+      CREATED: [
+        {
+          action: 'submit',
+          label: 'Nộp hồ sơ',
+          icon: Send,
+          color: 'bg-blue-500 hover:bg-blue-600',
+        },
+      ],
+      SUBMITTED: [
+        {
+          action: 'review',
+          label: 'Xét duyệt',
+          icon: Eye,
+          color: 'bg-yellow-500 hover:bg-yellow-600',
+        },
+      ],
+      REVIEWING: [
+        {
+          action: 'approve',
+          label: 'Phê duyệt',
+          icon: ThumbsUp,
+          color: 'bg-green-500 hover:bg-green-600',
+        },
+        {
+          action: 'reject',
+          label: 'Từ chối',
+          icon: ThumbsDown,
+          color: 'bg-red-500 hover:bg-red-600',
+        },
+      ],
+      APPROVED: [
+        {
+          action: 'archive',
+          label: 'Lưu trữ',
+          icon: Archive,
+          color: 'bg-purple-500 hover:bg-purple-600',
+        },
+      ],
+      REJECTED: [
+        {
+          action: 'archive',
+          label: 'Lưu trữ',
+          icon: Archive,
+          color: 'bg-purple-500 hover:bg-purple-600',
+        },
+      ],
+    };
+    return actions[state] || [];
+  };
+
+  const filterButtons = [
+    { value: 'ALL', label: 'Tất cả' },
+    { value: 'CREATED', label: 'Đã tạo' },
+    { value: 'SUBMITTED', label: 'Đã nộp' },
+    { value: 'REVIEWING', label: 'Xét duyệt' },
+    { value: 'APPROVED', label: 'Phê duyệt' },
+    { value: 'REJECTED', label: 'Từ chối' },
+    { value: 'ARCHIVED', label: 'Lưu trữ' },
+  ];
+
+  const filteredFiles = (files || []).filter((file) => {
+    if (!searchQuery) return true;
+    return (
+      file.studentName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      file.studentCode?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+
+  return (
+    <div className="min-h-screen w-full bg-[#fcfdff] font-sans relative overflow-x-hidden">
+      {/* ===== BACKGROUND EFFECT ===== */}
+      <div className="absolute top-0 left-1/4 w-[32rem] h-[32rem] bg-blue-100/40 blur-[140px] rounded-full -translate-y-1/2 pointer-events-none" />
+      <div className="absolute top-1/3 right-0 w-[32rem] h-[32rem] bg-indigo-100/30 blur-[140px] rounded-full translate-x-1/3 pointer-events-none" />
+
+      {/* ===== FULL WIDTH CONTAINER ===== */}
+      <div className="w-full min-h-screen px-8 py-10 relative z-10 flex flex-col">
+        {/* ===== HEADER ===== */}
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-10 mb-10">
+          {/* Left */}
+          <div className="max-w-3xl">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 shadow-sm mb-6">
+              <FileText className="w-4 h-4 text-blue-600" />
+              <span className="text-[11px] font-bold text-blue-600 uppercase tracking-widest">
+                Module quản lý hồ sơ
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1 className="text-4xl xl:text-5xl font-black tracking-tight text-slate-900 mb-4">
+              Danh sách{' '}
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Hồ sơ sinh viên
+              </span>
+            </h1>
+
+            <p className="text-base xl:text-lg text-slate-500 leading-relaxed">
+              Quản lý, theo dõi tiến độ và trạng thái xử lý hồ sơ sinh viên trên
+              toàn bộ hệ thống một cách tập trung.
+            </p>
+          </div>
+
+          {/* ===== TOOLBAR ===== */}
+          <div className="flex flex-wrap items-center gap-4 self-start xl:self-auto">
+            {/* Search */}
+            <div className="relative group">
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+              <input
+                type="text"
+                placeholder="Tìm kiếm hồ sơ..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-12 w-72 pl-11 pr-4
+                                           bg-white border-2 border-slate-100 rounded-xl
+                                           text-sm font-medium
+                                           focus:outline-none focus:border-blue-200
+                                           focus:ring-4 focus:ring-blue-50
+                                           transition-all shadow-sm"
+              />
+            </div>
+
+            {/* Filter */}
+            <button
+              className="h-12 w-12 flex items-center justify-center
+                                       bg-white border-2 border-slate-100
+                                       text-slate-600 rounded-xl
+                                       hover:bg-slate-50 hover:border-slate-200
+                                       transition-all shadow-sm
+                                       active:scale-95"
+              title="Bộ lọc"
+            >
+              <SlidersHorizontal className="w-5 h-5" />
+            </button>
+
+            {/* Create */}
+            <Link
+              to="/create-file"
+              className="h-12 px-6
+                                       flex items-center justify-center gap-2
+                                       bg-gradient-to-r from-blue-600 to-indigo-600
+                                       rounded-xl font-bold text-white text-sm
+                                       transition-all duration-300
+                                       hover:scale-[1.03]
+                                       active:scale-95
+                                       shadow-[0_10px_25px_rgba(37,99,235,0.3)]
+                                       hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)]"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Tạo hồ sơ</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* ===== CONTENT (FULL HEIGHT) ===== */}
+        <div
+          className="flex-1 bg-white rounded-[1rem]
+                                border border-slate-100/80
+                                shadow-[0_20px_40px_rgba(0,0,0,0.04)]
+                                overflow-hidden relative backdrop-blur-xl"
+        >
+          <div className="h-full rounded-[1rem] overflow-auto bg-white/60 px-8 py-10">
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="text-center">
+                  <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-gray-600 font-medium">
+                    Đang tải dữ liệu...
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Filter Tabs */}
+                <div className="bg-white rounded-2xl shadow-lg p-2 border border-gray-100">
+                  <div className="flex flex-wrap gap-2">
+                    {filterButtons.map((btn) => (
+                      <button
+                        key={btn.value}
+                        onClick={() => setFilter(btn.value)}
+                        className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                          filter === btn.value
+                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {btn.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Files Grid */}
+                {filteredFiles.length === 0 ? (
+                  <div className="bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-100">
+                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Folder className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">
+                      Không có hồ sơ nào
+                    </h3>
+                    <p className="text-gray-500">
+                      {searchQuery
+                        ? 'Không tìm thấy hồ sơ phù hợp'
+                        : filter === 'ALL'
+                        ? 'Chưa có hồ sơ nào trong hệ thống'
+                        : `Không có hồ sơ nào ở trạng thái ${
+                            filterButtons.find((b) => b.value === filter)?.label
+                          }`}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid gap-6">
+                    {filteredFiles.map((file) => {
+                      const config = stateConfig[file.currentState];
+                      const StateIcon = config.icon;
+
+                      return (
+                        <div
+                          key={file.id}
+                          className={`bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 ${config.border} group`}
+                        >
+                          {/* Colored top bar */}
+                          <div
+                            className={`h-2 bg-gradient-to-r ${config.color}`}
+                          ></div>
+
+                          <div className="p-6">
+                            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                              {/* Left Content */}
+                              <div className="flex-1 space-y-4">
+                                {/* Header */}
+                                <div className="flex items-start gap-4">
+                                  <div
+                                    className={`w-14 h-14 rounded-xl ${config.bg} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition`}
+                                  >
+                                    <StateIcon
+                                      className={`w-7 h-7 text-gray-600`}
+                                    />
+                                  </div>
+                                  <div className="flex-1">
+                                    <h3 className="text-xl font-bold text-gray-800 mb-1">
+                                      {file.studentName}
+                                    </h3>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <span
+                                        className={`px-4 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r ${config.color} text-white shadow-md`}
+                                      >
+                                        {config.label}
+                                      </span>
+                                      <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                                        {file.studentCode}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Details Grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                  <div className="flex items-center gap-2 text-gray-600">
+                                    <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                                      <FileText className="w-4 h-4 text-indigo-600" />
+                                    </div>
+                                    <div>
+                                      <span className="font-semibold text-gray-800">
+                                        Loại:
+                                      </span>{' '}
+                                      {file.fileType}
+                                    </div>
+                                  </div>
+
+                                  <div className="flex items-center gap-2 text-gray-600">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                      <Clock className="w-4 h-4 text-blue-600" />
+                                    </div>
+                                    <div>
+                                      <span className="font-semibold text-gray-800">
+                                        Ngày nộp:
+                                      </span>{' '}
+                                      {new Date(
+                                        file.submitDate
+                                      ).toLocaleDateString('vi-VN')}
+                                    </div>
+                                  </div>
+
+                                  {file.reviewer && (
+                                    <div className="flex items-center gap-2 text-gray-600">
+                                      <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
+                                        <Eye className="w-4 h-4 text-purple-600" />
+                                      </div>
+                                      <div>
+                                        <span className="font-semibold text-gray-800">
+                                          Người duyệt:
+                                        </span>{' '}
+                                        {file.reviewer}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {file.reviewDate && (
+                                    <div className="flex items-center gap-2 text-gray-600">
+                                      <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+                                        <CheckCircle className="w-4 h-4 text-green-600" />
+                                      </div>
+                                      <div>
+                                        <span className="font-semibold text-gray-800">
+                                          Ngày duyệt:
+                                        </span>{' '}
+                                        {new Date(
+                                          file.reviewDate
+                                        ).toLocaleDateString('vi-VN')}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Additional Info */}
+                                {file.documents?.length > 0 && (
+                                  <div
+                                    className={`p-4 ${config.bg} border ${config.border} rounded-xl`}
+                                  >
+                                    <p className="text-sm font-semibold text-gray-700 mb-2">
+                                      Tài liệu đính kèm:
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                      {file.documents.map((doc, idx) => (
+                                        <span
+                                          key={idx}
+                                          className="px-3 py-1 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 shadow-sm"
+                                        >
+                                          📄 {doc}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {file.note && (
+                                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                                    <p className="text-sm font-semibold text-amber-800 mb-1">
+                                      Ghi chú:
+                                    </p>
+                                    <p className="text-sm text-amber-700">
+                                      {file.note}
+                                    </p>
+                                  </div>
+                                )}
+
+                                {file.result && (
+                                  <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl">
+                                    <p className="text-sm font-semibold text-rose-800 mb-1">
+                                      Kết quả:
+                                    </p>
+                                    <p className="text-sm text-rose-700">
+                                      {file.result}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Action Buttons */}
+                              {getAvailableActions(file.currentState).length >
+                                0 && (
+                                <div className="flex lg:flex-col gap-3 flex-shrink-0">
+                                  {getAvailableActions(file.currentState).map(
+                                    ({ action, label, icon: Icon, color }) => (
+                                      <button
+                                        key={action}
+                                        onClick={() =>
+                                          handleStateAction(file.id, action)
+                                        }
+                                        className={`flex items-center justify-center gap-2 px-6 py-3 ${color} text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all whitespace-nowrap`}
+                                      >
+                                        <Icon className="w-5 h-5" />
+                                        <span>{label}</span>
+                                      </button>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Shine border */}
+          <div
+            className="absolute inset-0 border-2 border-white/40
+                                   rounded-[2rem] pointer-events-none"
+            aria-hidden="true"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
