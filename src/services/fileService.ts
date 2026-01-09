@@ -38,8 +38,8 @@ export const fileService = {
   },
 
   // PUT /api/files/{id}/review
-  reviewFile: async (id: string) => {
-    const response = await fileApi.put(`/${id}/review`);
+  reviewFile: async (id: string, reviewer: string) => {
+    const response = await fileApi.put(`/${id}/review`, { reviewer });
     return response;
   },
 

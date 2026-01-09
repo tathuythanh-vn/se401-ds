@@ -338,150 +338,42 @@ export default function ManageFilePage() {
                       return (
                         <div
                           key={file.id}
-                          className={`bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 ${config.border} group`}
+                          className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group"
                         >
-                          {/* Colored top bar */}
+                          {/* Gradient Header Section */}
                           <div
-                            className={`h-2 bg-gradient-to-r ${config.color}`}
-                          ></div>
+                            className={`bg-gradient-to-r ${config.color} px-8 py-6 relative overflow-hidden`}
+                          >
+                            {/* Decorative circles */}
+                            <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full"></div>
+                            <div className="absolute -left-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full"></div>
 
-                          <div className="p-6">
-                            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-                              {/* Left Content */}
-                              <div className="flex-1 space-y-4">
-                                {/* Header */}
-                                <div className="flex items-start gap-4">
-                                  <div
-                                    className={`w-14 h-14 rounded-xl ${config.bg} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition`}
-                                  >
-                                    <StateIcon
-                                      className={`w-7 h-7 text-gray-600`}
-                                    />
-                                  </div>
-                                  <div className="flex-1">
-                                    <h3 className="text-xl font-bold text-gray-800 mb-1">
-                                      {file.studentName}
-                                    </h3>
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      <span
-                                        className={`px-4 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r ${config.color} text-white shadow-md`}
-                                      >
-                                        {config.label}
-                                      </span>
-                                      <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
-                                        {file.studentCode}
-                                      </span>
-                                    </div>
-                                  </div>
+                            <div className="relative flex items-start justify-between gap-6">
+                              {/* Left: Icon + Info */}
+                              <div className="flex items-start gap-4">
+                                {/* Icon */}
+                                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                  <StateIcon className="w-8 h-8 text-white" />
                                 </div>
 
-                                {/* Details Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                                  <div className="flex items-center gap-2 text-gray-600">
-                                    <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0">
-                                      <FileText className="w-4 h-4 text-indigo-600" />
-                                    </div>
-                                    <div>
-                                      <span className="font-semibold text-gray-800">
-                                        Loại:
-                                      </span>{' '}
-                                      {file.fileType}
-                                    </div>
+                                {/* Student Info */}
+                                <div>
+                                  <h3 className="text-2xl font-bold text-white mb-2">
+                                    {file.studentName}
+                                  </h3>
+                                  <div className="flex items-center gap-2 text-white/90">
+                                    <FileText className="w-4 h-4" />
+                                    <span className="text-sm font-medium">
+                                      Mã SV: {file.studentCode}
+                                    </span>
                                   </div>
-
-                                  <div className="flex items-center gap-2 text-gray-600">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                                      <Clock className="w-4 h-4 text-blue-600" />
-                                    </div>
-                                    <div>
-                                      <span className="font-semibold text-gray-800">
-                                        Ngày nộp:
-                                      </span>{' '}
-                                      {new Date(
-                                        file.submitDate
-                                      ).toLocaleDateString('vi-VN')}
-                                    </div>
-                                  </div>
-
-                                  {file.reviewer && (
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                      <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
-                                        <Eye className="w-4 h-4 text-purple-600" />
-                                      </div>
-                                      <div>
-                                        <span className="font-semibold text-gray-800">
-                                          Người duyệt:
-                                        </span>{' '}
-                                        {file.reviewer}
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  {file.reviewDate && (
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                      <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
-                                        <CheckCircle className="w-4 h-4 text-green-600" />
-                                      </div>
-                                      <div>
-                                        <span className="font-semibold text-gray-800">
-                                          Ngày duyệt:
-                                        </span>{' '}
-                                        {new Date(
-                                          file.reviewDate
-                                        ).toLocaleDateString('vi-VN')}
-                                      </div>
-                                    </div>
-                                  )}
                                 </div>
-
-                                {/* Additional Info */}
-                                {file.documents?.length > 0 && (
-                                  <div
-                                    className={`p-4 ${config.bg} border ${config.border} rounded-xl`}
-                                  >
-                                    <p className="text-sm font-semibold text-gray-700 mb-2">
-                                      Tài liệu đính kèm:
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                      {file.documents.map((doc, idx) => (
-                                        <span
-                                          key={idx}
-                                          className="px-3 py-1 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 shadow-sm"
-                                        >
-                                          📄 {doc}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-
-                                {file.note && (
-                                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                                    <p className="text-sm font-semibold text-amber-800 mb-1">
-                                      Ghi chú:
-                                    </p>
-                                    <p className="text-sm text-amber-700">
-                                      {file.note}
-                                    </p>
-                                  </div>
-                                )}
-
-                                {file.result && (
-                                  <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl">
-                                    <p className="text-sm font-semibold text-rose-800 mb-1">
-                                      Kết quả:
-                                    </p>
-                                    <p className="text-sm text-rose-700">
-                                      {file.result}
-                                    </p>
-                                  </div>
-                                )}
                               </div>
 
-                              {/* Action Buttons */}
+                              {/* Right: Action Buttons */}
                               {getAvailableActions(file.currentState).length >
                                 0 && (
-                                <div className="flex lg:flex-col gap-3 flex-shrink-0">
+                                <div className="flex flex-wrap gap-2 items-start">
                                   {getAvailableActions(file.currentState).map(
                                     ({ action, label, icon: Icon, color }) => (
                                       <button
@@ -489,15 +381,177 @@ export default function ManageFilePage() {
                                         onClick={() =>
                                           handleStateAction(file.id, action)
                                         }
-                                        className={`flex items-center justify-center gap-2 px-6 py-3 ${color} text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all whitespace-nowrap`}
+                                        className="flex items-center gap-2 px-5 py-2.5 bg-white/95 hover:bg-white text-gray-800 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 whitespace-nowrap"
                                       >
-                                        <Icon className="w-5 h-5" />
+                                        <Icon className="w-4 h-4" />
                                         <span>{label}</span>
                                       </button>
                                     )
                                   )}
                                 </div>
                               )}
+                            </div>
+                          </div>
+
+                          {/* Content Section */}
+                          <div className="p-8 space-y-6">
+                            {/* Info Grid */}
+                            <div className="space-y-4">
+                              {/* File Type */}
+                              <div className="flex items-center gap-3">
+                                <div
+                                  className={`w-10 h-10 rounded-xl ${config.bg} flex items-center justify-center flex-shrink-0`}
+                                >
+                                  <FileText className="w-5 h-5 text-gray-700" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="text-xs text-gray-500 font-medium mb-0.5">
+                                    Loại hồ sơ
+                                  </div>
+                                  <div className="font-bold text-gray-900">
+                                    {file.fileType}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Status */}
+                              <div className="flex items-center gap-3">
+                                <div
+                                  className={`w-10 h-10 rounded-xl ${config.bg} flex items-center justify-center flex-shrink-0`}
+                                >
+                                  <StateIcon className="w-5 h-5 text-gray-700" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="text-xs text-gray-500 font-medium mb-0.5">
+                                    Trạng thái
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <span
+                                      className={`px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r ${config.color} text-white`}
+                                    >
+                                      {config.label}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Submit Date */}
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                  <Clock className="w-5 h-5 text-blue-600" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="text-xs text-gray-500 font-medium mb-0.5">
+                                    Ngày nộp
+                                  </div>
+                                  <div className="font-bold text-gray-900">
+                                    {new Date(
+                                      file.submitDate
+                                    ).toLocaleDateString('vi-VN')}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Reviewer */}
+                              {file.reviewer && (
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+                                    <Eye className="w-5 h-5 text-purple-600" />
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="text-xs text-gray-500 font-medium mb-0.5">
+                                      Người duyệt
+                                    </div>
+                                    <div className="font-bold text-gray-900">
+                                      {file.reviewer}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Review Date */}
+                              {file.reviewDate && (
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                                    <CheckCircle className="w-5 h-5 text-green-600" />
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="text-xs text-gray-500 font-medium mb-0.5">
+                                      Ngày duyệt
+                                    </div>
+                                    <div className="font-bold text-gray-900">
+                                      {new Date(
+                                        file.reviewDate
+                                      ).toLocaleDateString('vi-VN')}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Documents */}
+                            {file.documents?.length > 0 && (
+                              <div className="pt-4 border-t border-gray-100">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <FileText className="w-4 h-4 text-gray-600" />
+                                  <span className="text-sm font-bold text-gray-700">
+                                    Tài liệu đính kèm:
+                                  </span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {file.documents.map((doc, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl text-sm font-semibold text-blue-900 transition-all cursor-pointer group/doc"
+                                    >
+                                      <FileText className="w-4 h-4 text-blue-600 group-hover/doc:scale-110 transition-transform" />
+                                      <span>{doc}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Note */}
+                            {file.note && (
+                              <div className="pt-4 border-t border-gray-100">
+                                <div className="text-sm font-bold text-gray-700 mb-2">
+                                  Ghi chú
+                                </div>
+                                <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                                  <p className="text-sm text-amber-900 leading-relaxed">
+                                    {file.note}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Result */}
+                            {file.result && (
+                              <div className="pt-4 border-t border-gray-100">
+                                <div className="text-sm font-bold text-gray-700 mb-2">
+                                  Kết quả
+                                </div>
+                                <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl">
+                                  <p className="text-sm text-rose-900 leading-relaxed">
+                                    {file.result}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Info Footer */}
+                            <div className="flex items-start gap-2 p-4 bg-blue-50 border border-blue-100 rounded-xl">
+                              <span className="text-lg">💡</span>
+                              <div className="flex-1">
+                                <span className="text-sm font-bold text-blue-900 mr-1">
+                                  Lưu ý:
+                                </span>
+                                <span className="text-sm text-blue-800">
+                                  Vui lòng kiểm tra kỹ thông tin trước khi nộp
+                                  hồ sơ. Sau khi nộp, bạn không thể chỉnh sửa.
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
