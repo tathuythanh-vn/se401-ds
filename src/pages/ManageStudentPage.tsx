@@ -61,7 +61,7 @@ export default function ManageStudentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] pb-12">
+    <div className="min-h-screen bg-[#f8fafc] pb-12 flex flex-col flex-1">
       {/* Top Navigation / Header */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
@@ -89,7 +89,7 @@ export default function ManageStudentPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 mt-8">
+      <div className="max-w-7xl px-4 mt-8 flex-1 flex flex-col">
         {/* Statistics Quick View */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -157,7 +157,7 @@ export default function ManageStudentPage() {
         )}
 
         {/* Table View */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex-1">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>

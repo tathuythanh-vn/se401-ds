@@ -68,7 +68,7 @@ export function LayoutPage() {
                     <Link to={item.to}>
                       <div className="flex gap-2 items-center">
                         <span>{item.icon}</span>
-                        <span className="text-xl" style={{ color: item.color }}>
+                        <span className="text-lg" style={{ color: item.color }}>
                           {item.title}
                         </span>
                       </div>
@@ -80,7 +80,7 @@ export function LayoutPage() {
           </NavigationMenu>
         </div>
       </header>
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8 flex flex-col">
         <Outlet />
       </main>
     </div>

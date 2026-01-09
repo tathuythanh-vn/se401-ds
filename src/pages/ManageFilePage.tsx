@@ -277,11 +277,11 @@ export default function ManageFilePage() {
           className="flex-1 bg-white rounded-[1rem]
                                 border border-slate-100/80
                                 shadow-[0_20px_40px_rgba(0,0,0,0.04)]
-                                overflow-hidden relative backdrop-blur-xl"
+                                overflow-hidden relative backdrop-blur-xl flex flex-col"
         >
-          <div className="h-full rounded-[1rem] overflow-auto bg-white/60 px-8 py-10">
+          <div className="h-full rounded-[1rem] overflow-auto bg-white/60 px-8 py-10 flex-1 flex flex-col">
             {loading ? (
-              <div className="flex items-center justify-center py-16">
+              <div className="flex items-center justify-center py-16 flex-1">
                 <div className="text-center">
                   <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                   <p className="text-gray-600 font-medium">
@@ -290,7 +290,7 @@ export default function ManageFilePage() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-6 flex-1 flex flex-col">
                 {/* Filter Tabs */}
                 <div className="bg-white rounded-2xl shadow-lg p-2 border border-gray-100">
                   <div className="flex flex-wrap gap-2">
@@ -298,7 +298,7 @@ export default function ManageFilePage() {
                       <button
                         key={btn.value}
                         onClick={() => setFilter(btn.value)}
-                        className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                        className={`px-4 py-2 rounded-xl font-semibold transition-all ${
                           filter === btn.value
                             ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -312,7 +312,7 @@ export default function ManageFilePage() {
 
                 {/* Files Grid */}
                 {filteredFiles.length === 0 ? (
-                  <div className="bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-100">
+                  <div className="h-full bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-100 flex-1">
                     <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Folder className="w-10 h-10 text-gray-400" />
                     </div>

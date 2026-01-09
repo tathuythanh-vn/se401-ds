@@ -61,7 +61,7 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/create-file"
-                className="group relative p-6 bg-indigo-600 rounded-2xl font-bold text-white transition-all duration-300 hover:scale-[1.03] active:scale-95 shadow-[0_20px_50px_rgba(79,70,229,0.3)] hover:shadow-[0_20px_50px_rgba(79,70,229,0.5)] flex items-center gap-3 overflow-hidden"
+                className="group relative p-4 bg-indigo-600 rounded-2xl font-bold text-white transition-all duration-300 hover:scale-[1.03] active:scale-95 shadow-[0_20px_50px_rgba(79,70,229,0.3)] hover:shadow-[0_20px_50px_rgba(79,70,229,0.5)] flex items-center gap-3 overflow-hidden"
               >
                 <div className="absolute inset-0 bg-linear-to-r from-indigo-600 to-purple-600 group-hover:opacity-90 transition-opacity" />
                 <span className="relative z-10">Tạo hồ sơ mới</span>
@@ -70,7 +70,7 @@ export default function HomePage() {
 
               <Link
                 to="/manage-file"
-                className="p-6 bg-white rounded-2xl font-bold text-slate-700 border-2 border-slate-100 hover:border-indigo-100 hover:bg-indigo-50/50 transition-all duration-300 shadow-sm hover:shadow-md active:scale-95 flex items-center gap-2"
+                className="p-4 bg-white rounded-2xl font-bold text-slate-700 border-2 border-slate-100 hover:border-indigo-100 hover:bg-indigo-50/50 transition-all duration-300 shadow-sm hover:shadow-md active:scale-95 flex items-center gap-2"
               >
                 <span>Xem danh sách</span>
                 <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
