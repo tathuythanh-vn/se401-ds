@@ -44,8 +44,8 @@ export const fileService = {
   },
 
   // PUT /api/files/{id}/reject
-  rejectFile: async (id: string) => {
-    const response = await fileApi.put(`/${id}/reject`);
+  rejectFile: async (id: string, reason: string) => {
+    const response = await fileApi.put(`/${id}/reject`, { reason });
     return response;
   },
 
